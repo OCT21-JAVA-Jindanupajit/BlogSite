@@ -7,19 +7,25 @@
     <!--  Bootstrap 4.3.1  -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/general.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
 
 </head>
 <body>
-<ul th:each="blog : ${blogDatabase}">
-    <li>
-        <span th:text="${blog.title}">Title</span>
-        <span th:text="${blog.content}">Content</span>
-        <span th:text="${blog.timestamp}">Time</span>
-        <span th:text="${blog.user.name}">Time</span>
-        <span><a th:href="@{/blog/view/{id}(id=${blog.id})}">View ...</a></span>
-    </li>
-</ul>
 
+<div th:insert="__${NavbarViewModel.view}__"  th:object="${NavbarViewModel}">
+    <!-- fragment/navbar :: navbar -->
+</div>
+<div>
+    <div class="jumbotron default-banner">
+
+    </div>
+</div>
+<div class="container">
+    <div th:insert="__${BlogEntryListViewModel.view}__"  th:object="${BlogEntryListViewModel}">
+        <!-- fragment/blogentry :: list -->
+    </div>
+</div>
 
 <!--  Bootstrap 4.3.1  -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

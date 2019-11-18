@@ -1,0 +1,42 @@
+.jumbotron.default-banner {
+    background-image: url(/images/banner.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+}
+
+.jumbotron.default-blog-banner {
+    background-image: url(/images/blog-banner.jpg);
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+}
+
+.jumbotron.custom-banner {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+}
+
+body {
+    background-color: #F1FAEE;
+    color: #1D3557;
+}
+
+a {
+    color: #64698f;
+}
+
+a:hover {
+    color: #457B9D;
+}
+
+.red {
+    color: #E63946;
+}
+
+.blog.content {
+    font-size: 1.2rem;
+    font-family: 'Raleway', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}

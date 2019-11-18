@@ -2,6 +2,7 @@ package jbc.oct21.jindanupajit.blogapplication.model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class BlogEntry {
@@ -28,6 +29,8 @@ public class BlogEntry {
     @Lob
     private String content;
 
+    private String jumbotron;
+
     public BlogEntry() {
     }
 
@@ -35,12 +38,13 @@ public class BlogEntry {
         copyValueFrom(other);
     }
 
-    public BlogEntry(Timestamp timestamp, Category category, User user, String title, String content) {
+    public BlogEntry(Timestamp timestamp, Category category, User user, String title, String content, String jumbotron) {
         this.timestamp = timestamp;
         this.category = category;
         this.user = user;
         this.title = title;
         this.content = content;
+        this.jumbotron = jumbotron;
     }
 
     public long getId() {
@@ -53,6 +57,14 @@ public class BlogEntry {
 
     public Timestamp getTimestamp() {
         return timestamp;
+    }
+
+    public String getDateString() {
+        return timestamp.toLocalDateTime().format(DateTimeFormatter.ofPattern("MMM dd, yyyy"));
+    }
+
+    public String getTimeString() {
+        return timestamp.toLocalDateTime().format(DateTimeFormatter.ofPattern("hh:mm:ss"));
     }
 
     public void setTimestamp(Timestamp timestamp) {
@@ -91,9 +103,17 @@ public class BlogEntry {
         this.content = content;
     }
 
+    public String getJumbotron() {
+        return jumbotron;
+    }
+
+    public void setJumbotron(String jumbotron) {
+        this.jumbotron = jumbotron;
+    }
+
     @Override
     protected BlogEntry clone() {
-        return new BlogEntry(this.timestamp, this.category, this.user, this.title, this.content);
+        return new BlogEntry(this.timestamp, this.category, this.user, this.title, this.content, this.jumbotron);
     }
 
     public BlogEntry copyValueFrom(BlogEntry other) {
@@ -102,6 +122,7 @@ public class BlogEntry {
         this.user = other.user;
         this.title = other.title;
         this.content = other.content;
+        this.jumbotron = other.jumbotron;
         return this;
     }
 }

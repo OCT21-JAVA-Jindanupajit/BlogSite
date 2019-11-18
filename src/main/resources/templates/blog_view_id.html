@@ -1,21 +1,33 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:with="blog=${BlogEntryViewModel.viewModel}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:text="${blog.title}">Title</title>
 
     <!--  Bootstrap 4.3.1  -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+    <link rel="stylesheet" th:href="@{/css/general.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
 </head>
 <body>
-<span th:text="${blog.id}">Title</span>
-<span th:text="${blog.title}">Title</span>
-<span th:text="${blog.content}">Content</span>
-<span th:text="${blog.timestamp}">Time</span>
-<span th:text="${blog.user.name}">Time</span>
-
+<div th:insert="__${NavbarViewModel.view}__"  th:object="${NavbarViewModel.viewModel}">
+    <!-- fragment/navbar::navbar -->
+</div>
+<div>
+    <div th:if="${blog.jumbotron}" class="jumbotron custom-banner"
+         th:style="'background-image: url('+${blog.jumbotron}+')'">
+    </div>
+    <div th:unles="${blog.jumbotron}" class="jumbotron default-blog-banner">
+    </div>
+</div>
+<div class="container">
+    <p class="display-4" th:text="${blog.title}">Title</p>
+</div>
+<div class="container">
+    <p class="blog content" th:text="${blog.content}">Content</p>
+</div>
 
 <!--  Bootstrap 4.3.1  -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

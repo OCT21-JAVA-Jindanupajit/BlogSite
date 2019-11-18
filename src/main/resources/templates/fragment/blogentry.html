@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="list">
+    <div th:each="blog : ${BlogEntryListViewModel.viewModel}" >
+        <div th:insert="::card" th:object="${blog}"></div>
+    </div>
+</div>
+<div th:fragment="card">
+    <div th:id="'Blog-'+*{id}" class="card my-lg-2" >
+        <div class="card-body p-3">
+            <h5 class="card-title my-0" th:text="*{title}">Title</h5>
+            <small>by <span th:id="'User-'+*{user.id}" th:text="*{user.name}">Name</span>
+                on <span th:text="*{dateString}">Date</span>
+                at <span th:text="*{timeString}">Time</span></small>
+            <hr class="mt-0 mb-1"/>
+
+            <div style="height: 1.5em"><span class="mx-100" th:text="*{content}">Content</span></div>
+
+            <span><a th:href="@{/blog/view/{id}(id=*{id})}">View ...</a></span>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

@@ -52,13 +52,13 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         if (blogEntryRepository.count() == 0) {
             blogEntryRepository.save(
-                    new BlogEntry(new Timestamp(System.currentTimeMillis()), null, user, "Title 1", "Content 1")
+                    new BlogEntry(new Timestamp(System.currentTimeMillis()), null, user, "Title 1", "Content 1",null)
             );
             blogEntryRepository.save(
-                    new BlogEntry(new Timestamp(System.currentTimeMillis()), null, user, "Title 2", "Content 2")
+                    new BlogEntry(new Timestamp(System.currentTimeMillis()), null, user, "Title 2", "Content 2",null)
             );
             blogEntryRepository.save(
-                    new BlogEntry(new Timestamp(System.currentTimeMillis()), null, user, "Title 3", "Content 3")
+                    new BlogEntry(new Timestamp(System.currentTimeMillis()), null, user, "Title 3", "Content 3",null)
             );
         }
     }
