@@ -64,7 +64,7 @@ public class BlogEntry {
     }
 
     public String getTimeString() {
-        return timestamp.toLocalDateTime().format(DateTimeFormatter.ofPattern("hh:mm:ss"));
+        return timestamp.toLocalDateTime().format(DateTimeFormatter.ofPattern("hh:mm:ss a"));
     }
 
     public void setTimestamp(Timestamp timestamp) {

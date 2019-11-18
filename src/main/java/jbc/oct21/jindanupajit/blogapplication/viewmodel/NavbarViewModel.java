@@ -1,17 +1,31 @@
 package jbc.oct21.jindanupajit.blogapplication.viewmodel;
 
+import jbc.oct21.jindanupajit.blogapplication.model.BlogEntry;
+import jbc.oct21.jindanupajit.blogapplication.model.Category;
+import jbc.oct21.jindanupajit.blogapplication.repository.CategoryRepository;
 import jbc.oct21.jindanupajit.blogapplication.viewmodel.component.Link;
 import jbc.oct21.jindanupajit.blogapplication.viewmodel.component.NavItem;
 import jbc.oct21.jindanupajit.blogapplication.viewmodel.component.Navbar;
 
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+
 public class NavbarViewModel extends  ViewModel<Navbar> {
 
-    public NavbarViewModel() {
 
-        super("fragment/navbar :: navbar", new Navbar());
+    public NavbarViewModel(Navbar navbar) {
 
-        getViewModel().getBrand().setLabel("JBC Blog");
-        getViewModel().getBrand().setLinkUrl("/");
+        super("fragment/navbar :: navbar", navbar);
+
+    }
+
+    // default navbar
+    public static Navbar navbarDefault() {
+        Navbar navbar = new Navbar();
+        navbar.getBrand().setLabel("JBC Blog");
+        navbar.getBrand().setLinkUrl("/");
 
         NavItem navItem;
 
@@ -19,28 +33,44 @@ public class NavbarViewModel extends  ViewModel<Navbar> {
         navItem.setLabel("Home");
         navItem.getLinkCollection().get(0).setUrl("/blog/view");
         navItem.setActive(true);
-        getViewModel().getNavs().getNavItemCollection().add(navItem);
+        navbar.getNavs().getNavItemCollection().add(navItem);
 
         navItem = new NavItem();
         navItem.setLabel("My Profile");
-        getViewModel().getNavs().getNavItemCollection().add(navItem);
+        navbar.getNavs().getNavItemCollection().add(navItem);
 
-        navItem = new NavItem();
-        navItem.setLabel("Category");
-            navItem.getLinkCollection().get(0).setLabel("Menu 1");
-            navItem.getLinkCollection().get(0).setUrl("/link1");
-            navItem.getLinkCollection().add(new Link());
-            navItem.getLinkCollection().get(1).setLabel("Menu 2");
-            navItem.getLinkCollection().get(1).setUrl("/link2");
-            navItem.getLinkCollection().add(new Link());
-            navItem.getLinkCollection().get(2).setLabel("-");
-            navItem.getLinkCollection().get(2).setUrl("-");
-            navItem.getLinkCollection().add(new Link());
-            navItem.getLinkCollection().get(3).setLabel("Menu 3");
-            navItem.getLinkCollection().get(3).setUrl("/link3");
-        getViewModel().getNavs().getNavItemCollection().add(navItem);
+        return navbar;
+    }
 
+    public static NavItem navItem(String label, CategoryRepository categoryRepository) {
+        NavItem navItem = new NavItem();
+        navItem.setLabel(label);
+        ArrayList<Link> linkCollection = new ArrayList<>();
+        for (Category category : categoryRepository.findAll()) {
+            linkCollection.add(new Link(category.getName(),"/category/view"+category.getId()));
+        }
+        navItem.setLinkCollection(linkCollection);
+        return navItem;
+    }
 
+    public static NavItem navItem(String label, BlogEntry blogEntry) {
+        NavItem navItem = new NavItem();
+        navItem.setLabel(label);
+        ArrayList<Link> linkCollection = new ArrayList<>();
+        navItem.setLinkCollection(linkCollection);
+
+        navItem.getLinkCollection().add(new Link("New Article","/blog/edit/0"));
+
+        if ((blogEntry == null)||(blogEntry.getId() == 0)) {
+            navItem.setLabel("New Article");
+            return navItem;
+        }
+        Collections.addAll(navItem.getLinkCollection(),
+                new Link("-","-"),
+                new Link("Edit This Article","/blog/edit/"+blogEntry.getId()),
+                new Link("Delete This Article","javascript:$('#delete').modal('show');")
+        );
+        return navItem;
     }
 
 
