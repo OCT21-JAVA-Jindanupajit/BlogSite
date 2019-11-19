@@ -6,14 +6,16 @@ import jbc.oct21.jindanupajit.blogapplication.model.User;
 import jbc.oct21.jindanupajit.blogapplication.repository.BlogEntryRepository;
 import jbc.oct21.jindanupajit.blogapplication.repository.CategoryRepository;
 import jbc.oct21.jindanupajit.blogapplication.repository.UserRepository;
-import jbc.oct21.jindanupajit.blogapplication.viewmodel.NavbarViewModel;
-import jbc.oct21.jindanupajit.blogapplication.viewmodel.ViewModel;
+import jbc.oct21.jindanupajit.blogapplication.service.NavbarViewModel;
+import jbc.oct21.jindanupajit.blogapplication.service.UserDetailsServiceImpl;
+import jbc.oct21.jindanupajit.blogapplication.service.ViewModel;
 import jbc.oct21.jindanupajit.blogapplication.viewmodel.component.NavItem;
 import jbc.oct21.jindanupajit.blogapplication.viewmodel.component.Navbar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -32,17 +34,25 @@ public class BlogEntryController {
     @Autowired
     CategoryRepository categoryRepository;
 
-    @GetMapping(value = {"/"})
-    public String pageBlogView() {
-        return "redirect:/blog/view";
+    @ModelAttribute
+    public void globalModelAttribute(Model model) {
+        User user = userRepository.findByName(UserDetailsServiceImpl.getAuthentication().getName());
+        model.addAttribute("authenticatedUser", user);
     }
 
-    @GetMapping(value = {"/blog/view"})
+    @GetMapping(value = {"/"})
+    public String pageBlogView() {
+        return "redirect:/blogEntry/view";
+    }
+
+    @GetMapping(value = {"/blogEntry/view"})
     public String pageBlogView(Model model) {
+        User user = userRepository.findByName(UserDetailsServiceImpl.getAuthentication().getName());
 
         NavbarViewModel navbarViewModel = new NavbarViewModel(NavbarViewModel.navbarDefault());
-        navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(NavbarViewModel.navItem("Category", categoryRepository));
-        navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(NavbarViewModel.navItem("Article", (BlogEntry) null));
+        navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(NavbarViewModel.navItemProfile(user));
+        navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(NavbarViewModel.navItemCategory("Category" , categoryRepository.findAll()));
+        navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(NavbarViewModel.navItemBlogEntry(null));
         navbarViewModel.getViewModel().getNavs().getNavItemCollection().get(0).setActive(true);
         model.addAttribute("NavbarViewModel", navbarViewModel);
 
@@ -54,7 +64,8 @@ public class BlogEntryController {
 
 
 
-    @GetMapping(value = {"/blog/view/{idString}"})
+
+    @GetMapping(value = {"/blogEntry/view/{idString}"})
     public String pageBlogView(Model model, @PathVariable String idString) {
         long id;
         try {
@@ -63,25 +74,37 @@ public class BlogEntryController {
             id = 0;
         }
         Optional<BlogEntry> blog = blogEntryRepository.findById(id);
+        User user = userRepository.findByName(UserDetailsServiceImpl.getAuthentication().getName());
 
-        NavItem articleNavItem = NavbarViewModel.navItem("Article", blog.orElse(new BlogEntry()));
-        articleNavItem.setActive(true);
+        if (!blog.isPresent())
+            return "redirect:/";
 
-        NavItem categoryNavItem = NavbarViewModel.navItem("Category", categoryRepository);
+        BlogEntry blogEntry = blog.get();
+        NavItem articleNavItem;
+
+        if ((user != null)&&(blogEntry.getUser().getId() == user.getId())) {
+            articleNavItem = NavbarViewModel.navItemBlogEntry(blogEntry);
+            articleNavItem.setActive(true);
+        }
+        else {
+            articleNavItem = NavbarViewModel.navItemBlogEntry(null);
+        }
+        NavItem categoryNavItem = NavbarViewModel.navItemCategory("Category", categoryRepository.findAll());
         for (Category category : categoryRepository.findAll())
-            if (category.getId() == blog.orElse(new BlogEntry()).getCategory().getId()) {
+            if (category.getId() == blogEntry.getCategory().getId()) {
                 categoryNavItem.setLabel(category.getName());
                 categoryNavItem.setActive(true);
                 break;
             }
 
         NavbarViewModel navbarViewModel = new NavbarViewModel(NavbarViewModel.navbarDefault());
+        navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(NavbarViewModel.navItemProfile(user));
         navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(categoryNavItem);
         navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(articleNavItem);
         model.addAttribute("NavbarViewModel", navbarViewModel);
 
         model.addAttribute("BlogEntryViewModel",
-                new ViewModel<BlogEntry>("fragment/blogentry :: page", blog.orElse(new BlogEntry())));
+                new ViewModel<BlogEntry>("fragment/blogentry :: page", blogEntry));
 
 
         return "blog_view_id";
@@ -96,16 +119,20 @@ public class BlogEntryController {
             id = 0;
         }
 
-        NavItem categoryNavItem = NavbarViewModel.navItem("Category", categoryRepository);
+        NavItem categoryNavItem = NavbarViewModel.navItemCategory("Category", categoryRepository.findAll());
         for (Category category : categoryRepository.findAll()) {
             if (category.getId() == id)
                 categoryNavItem.setLabel(category.getName());
         }
         categoryNavItem.setActive(true);
+
+        User user = userRepository.findByName(UserDetailsServiceImpl.getAuthentication().getName());
+
         NavbarViewModel navbarViewModel = new NavbarViewModel(NavbarViewModel.navbarDefault());
+        navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(NavbarViewModel.navItemProfile(user));
         navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(categoryNavItem);
-        navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(NavbarViewModel.navItem("Article",
-                (BlogEntry) null));
+        navbarViewModel.getViewModel().getNavs().getNavItemCollection()
+                .add(NavbarViewModel.navItemBlogEntry(null));
         model.addAttribute("NavbarViewModel", navbarViewModel);
 
         model.addAttribute("BlogEntryListViewModel",
@@ -116,7 +143,7 @@ public class BlogEntryController {
         return "blog_view";
     }
 
-    @GetMapping(value = {"/blog/edit/{idString}"})
+    @GetMapping(value = {"/blogEntry/edit/{idString}"})
     public String pageBlogEdit(Model model, @PathVariable String idString) {
 
         long id;
@@ -144,18 +171,20 @@ public class BlogEntryController {
         return "blog_view_id";
     }
 
-    @PostMapping(value = {"/blog/edit/process"})
+    @PostMapping(value = {"/blogEntry/edit/process"})
     public String pageBlogEdit(BlogEntry blogEntry) {
 
         blogEntry.setTimestamp(new Timestamp(System.currentTimeMillis()));
-        User user = userRepository.findByName("Krissada");
-        blogEntry.setUser(user);
-        blogEntryRepository.save(blogEntry);
+        User user = userRepository.findByName(UserDetailsServiceImpl.getAuthentication().getName());
+        if ((blogEntry.getId() == 0)||(blogEntry.getUser().getId() == user.getId())) {
+            blogEntry.setUser(user);
+            blogEntryRepository.save(blogEntry);
+        }
 
-        return "redirect:/blog/view/"+blogEntry.getId();
+        return "redirect:/blogEntry/view/"+blogEntry.getId();
     }
 
-    @GetMapping(value = {"/blog/delete/{idString}"})
+    @GetMapping(value = {"/blogEntry/delete/{idString}"})
     public String pageBlogDelete(@PathVariable String idString) {
 
         long id;
@@ -165,10 +194,13 @@ public class BlogEntryController {
             id = 0;
         }
         Optional<BlogEntry> blog = (id == 0)?Optional.of(new BlogEntry()):blogEntryRepository.findById(id);
+        User user = userRepository.findByName(UserDetailsServiceImpl.getAuthentication().getName());
 
-        blog.ifPresent(blogEntry -> blogEntryRepository.delete(blogEntry));
+        blog.ifPresent(blogEntry -> {
+            if (user.getId() == blogEntry.getUser().getId())
+                blogEntryRepository.delete(blogEntry);});
 
-        return "redirect:/blog/view/";
+        return "redirect:/blogEntry/view/";
     }
 
 }

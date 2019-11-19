@@ -1,4 +1,4 @@
-package jbc.oct21.jindanupajit.blogapplication.viewmodel;
+package jbc.oct21.jindanupajit.blogapplication.service;
 
 public class ViewModel<T> {
     private String view;

@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface BlogEntryRepository extends CrudRepository<BlogEntry, Long> {
-        List<BlogEntry> findAllByOrderByTimestampDesc();
-        List<BlogEntry> findAllByCategoryIdOrderByTimestampDesc(long categoryId);
+        Iterable<BlogEntry> findAllByOrderByTimestampDesc();
+        Iterable<BlogEntry> findAllByCategoryIdOrderByTimestampDesc(long categoryId);
+        Iterable<BlogEntry> findAllByTitleContainingIgnoreCaseOrContentContainingIgnoreCaseOrderByTimestampDesc(String inTitle, String inContent);
 }

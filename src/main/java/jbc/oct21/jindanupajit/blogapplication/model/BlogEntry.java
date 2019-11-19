@@ -1,5 +1,7 @@
 package jbc.oct21.jindanupajit.blogapplication.model;
 
+import org.pegdown.PegDownProcessor;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
@@ -97,6 +99,15 @@ public class BlogEntry {
 
     public String getContent() {
         return content;
+    }
+
+    public String getHtmlContent() {
+        PegDownProcessor pegDownProcessor = new PegDownProcessor();
+        return pegDownProcessor.markdownToHtml(content);
+    }
+
+    public String getTextContent() {
+        return getHtmlContent().replaceAll("\\<.*?\\>", "");
     }
 
     public void setContent(String content) {

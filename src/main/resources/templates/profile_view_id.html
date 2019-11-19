@@ -1,26 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:with="blog=${BlogEntryViewModel.viewModel}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${blog.title}">Title</title>
+    <title>User Profile</title>
 
     <!--  Bootstrap 4.3.1  -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/general.css}">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
-    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
 </head>
 <body>
-<div th:insert="__${NavbarViewModel.view}__"  th:object="${NavbarViewModel.viewModel}">
-    <!-- fragment/navbar::navbar -->
+<div th:insert="__${NavbarViewModel.view}__"  th:object="${NavbarViewModel}">
+    <!-- fragment/navbar :: navbar -->
 </div>
-
-
-<div th:insert="__${BlogEntryViewModel.view}__"  th:object="${BlogEntryViewModel.viewModel}">
-        <!-- fragment/blogentry :: page -->
+<div th:object="${user}">
+<p th:text="*{id}"></p>
+<p th:text="*{name}"></p>
+<p th:text="*{biography}"></p>
+<p th:text="*{photo}"></p>
 </div>
-
 <!--  Bootstrap 4.3.1  -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

@@ -11,19 +11,23 @@
     </div>
 </div>
 <div th:fragment="card">
-    <div th:id="'Blog-'+*{id}" class="card my-lg-2" >
+    <div th:id="'Blog-'+*{id}" class="card my-1 my-lg-3" >
         <div class="card-body p-3">
             <h5 class="card-title my-0" th:text="*{title}">Title</h5>
             <p class="mt-0 mb-1 badge badge-light" th:text="*{category.name}"></p>
-            <small>by <span th:id="'User-'+*{user.id}" th:text="*{user.name}">Name</span>
+            <small>by <a th:href="@{/profile/view/{id}(id=*{user.id})}" th:id="'User-'+*{user.id}"
+                         class="dotted-underline" th:text="*{user.name}">Name</a>
+                <span th:if="${authenticatedUser}" th:with="uid=*{user.id}">
+                    <span th:if="${uid == authenticatedUser.id}" class="badge badge-success"> You </span>
+                </span>
                 on <span th:text="*{dateString}">Date</span>
                 at <span th:text="*{timeString}">Time</span></small>
             <hr class="mt-0 mb-1"/>
 
             <p class="p-0 m-0 clipped-content"
-               th:text="*{content}">Content</p>
+               th:text="*{textContent}">Content</p>
 
-            <p><a th:href="@{/blog/view/{id}(id=*{id})}">View ...</a></p>
+            <p><small><a th:href="@{/blogEntry/view/{id}(id=*{id})}" class="stretched-link">...</a></small></p>
         </div>
     </div>
 </div>
@@ -38,12 +42,16 @@
     <div class="container">
         <p class="display-4 mb-0" th:text="*{title}">Title</p>
         <p class="mt-0 mb-1 badge badge-dark" th:text="*{category.name}"></p>
-        <small>by <span th:id="'User-'+*{user.id}" th:text="*{user.name}">Name</span>
+        <small>by <a th:href="@{/profile/view/{id}(id=*{user.id})}"  th:id="'User-'+*{user.id}"
+                     class="dotted-underline" th:text="*{user.name}">Name</a>
+            <span th:if="${authenticatedUser}" th:with="uid=*{user.id}">
+                    <span th:if="${uid == authenticatedUser.id}" class="badge badge-success"> You </span>
+                </span>
             on <span th:text="*{dateString}">Date</span>
             at <span th:text="*{timeString}">Time</span></small>
     </div>
     <div class="container mt-3">
-        <p class="blog content" th:text="*{content}">Content</p>
+        <p class="blog content" th:utext="*{htmlContent}">Content</p>
     </div>
     <div id="delete" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -59,7 +67,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <a th:href="@{/blog/delete/{id}(id=*{id})}" class="btn btn-danger">Delete</a>
+                    <a th:href="@{/blogEntry/delete/{id}(id=*{id})}" class="btn btn-danger">Delete</a>
                 </div>
             </div>
         </div>
@@ -73,7 +81,7 @@
         <div th:unles="*{jumbotron}" class="jumbotron default-blog-banner">
         </div>
     </div>
-    <form action="#" th:action="@{/blog/edit/process}" method="post" th:object="${newBlogEntry}">
+    <form action="#" th:action="@{/blogEntry/edit/process}" method="post" th:object="${newBlogEntry}">
         <input type="hidden" th:field="*{id}">
         <input type="hidden" th:field="*{user}" th:value="*{user}">
         <div class="container">
@@ -102,7 +110,7 @@
             <div class="row">
                 <p class="col px-2">
                     <div class="float-right">
-                        <a th:href="@{/blog/view/{id}(id=*{id})}" class="btn btn-outline-danger">Discard</a>
+                        <a th:href="@{/blogEntry/view/{id}(id=*{id})}" class="btn btn-outline-danger">Discard</a>
                         <button type="submit" class="btn btn-success">Save Article</button>
                     </div>
                 </p>

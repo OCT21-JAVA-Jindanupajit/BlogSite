@@ -10,6 +10,7 @@ import jbc.oct21.jindanupajit.blogapplication.repository.SocialMediaTypeReposito
 import jbc.oct21.jindanupajit.blogapplication.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -18,16 +19,18 @@ import java.sql.Timestamp;
 public class DatabaseInitializer implements CommandLineRunner {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    SocialMediaTypeRepository socialMediaTypeRepository;
+    private SocialMediaTypeRepository socialMediaTypeRepository;
 
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
     @Autowired
-    BlogEntryRepository blogEntryRepository;
+    private BlogEntryRepository blogEntryRepository;
+
+
 
     @Override
     public void run(String... args) throws Exception {
@@ -42,14 +45,18 @@ public class DatabaseInitializer implements CommandLineRunner {
                 "\n" +
                 "Duis nibh felis, interdum et condimentum nec, tincidunt ac magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Aliquam aliquam vel nibh aliquet condimentum. Donec nisi purus, interdum consequat pharetra non, semper id orci. Donec suscipit est nec dapibus placerat. Sed et neque ut tellus ullamcorper pretium. Mauris commodo mollis arcu et blandit. Nunc justo nibh, euismod in metus in, feugiat mattis libero. Mauris euismod, lorem id congue tincidunt, nisl augue tempor tortor, nec rutrum ipsum ligula a risus. Phasellus dapibus ante eu ipsum feugiat iaculis. Vestibulum nulla tellus, tempor nec magna et, vulputate gravida purus. Aliquam ullamcorper commodo arcu eu malesuada. In egestas in sem et varius. Aenean ullamcorper orci eu aliquam vestibulum. Etiam tincidunt dolor at mauris fringilla feugiat eget in velit. Quisque suscipit magna id gravida interdum.";
 
-        User user =  null;
+        User user1 =  null, user2 = null;
         if (userRepository.count() == 0) {
             userRepository.save(
-                  user =  new User("Krissada", "Bio..", null, null)
+                  user1 =  new User("Krissada", "Bio..", null, null)
             );
-        } else
-            user = userRepository.findByName("Krissada");
-
+            userRepository.save(
+                  user2 =  new User("John", "Bio..", null, null)
+            );
+        } else {
+            user1 = userRepository.findByName("Krissada");
+            user2 = userRepository.findByName("John");
+        }
 
         if (socialMediaTypeRepository.count() == 0) {
             socialMediaTypeRepository.save(
@@ -87,19 +94,19 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         if (blogEntryRepository.count() == 0) {
             blogEntryRepository.save(
-                    new BlogEntry(new Timestamp(System.currentTimeMillis()), cGithub, user, "Basic Github", "Content 1 "+loremIpsum,null)
+                    new BlogEntry(new Timestamp(System.currentTimeMillis()), cGithub, user1, "Basic Github", "Content 1 "+loremIpsum,null)
             );
             blogEntryRepository.save(
-                    new BlogEntry(new Timestamp(System.currentTimeMillis()), cProgramDesign, user, "How the IPO is important", "Content 2 "+loremIpsum,null)
+                    new BlogEntry(new Timestamp(System.currentTimeMillis()), cProgramDesign, user1, "How the IPO is important", "Content 2 "+loremIpsum,null)
             );
             blogEntryRepository.save(
-                    new BlogEntry(new Timestamp(System.currentTimeMillis()), cCoreJava, user, "Java ", "Content 3 "+loremIpsum,null)
+                    new BlogEntry(new Timestamp(System.currentTimeMillis()), cCoreJava, user2, "Java ", "Content 3 "+loremIpsum,null)
             );
             blogEntryRepository.save(
-                    new BlogEntry(new Timestamp(System.currentTimeMillis()), cOopJava, user, "What is POJO", "Content 4 "+loremIpsum,null)
+                    new BlogEntry(new Timestamp(System.currentTimeMillis()), cOopJava, user2, "What is POJO", "Content 4 "+loremIpsum,null)
             );
             blogEntryRepository.save(
-                    new BlogEntry(new Timestamp(System.currentTimeMillis()), cHtml, user, "Custom Bootstrap Navbar Background", "Content 5 "+loremIpsum,null)
+                    new BlogEntry(new Timestamp(System.currentTimeMillis()), cHtml, user1, "Custom Bootstrap Navbar Background", "Content 5 "+loremIpsum,null)
             );
         }
     }
