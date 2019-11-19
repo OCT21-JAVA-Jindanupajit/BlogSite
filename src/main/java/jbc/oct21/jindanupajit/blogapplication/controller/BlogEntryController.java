@@ -1,27 +1,23 @@
 package jbc.oct21.jindanupajit.blogapplication.controller;
 
 import jbc.oct21.jindanupajit.blogapplication.model.BlogEntry;
+import jbc.oct21.jindanupajit.blogapplication.model.Category;
 import jbc.oct21.jindanupajit.blogapplication.model.User;
 import jbc.oct21.jindanupajit.blogapplication.repository.BlogEntryRepository;
 import jbc.oct21.jindanupajit.blogapplication.repository.CategoryRepository;
 import jbc.oct21.jindanupajit.blogapplication.repository.UserRepository;
 import jbc.oct21.jindanupajit.blogapplication.viewmodel.NavbarViewModel;
 import jbc.oct21.jindanupajit.blogapplication.viewmodel.ViewModel;
-import jbc.oct21.jindanupajit.blogapplication.viewmodel.component.Link;
 import jbc.oct21.jindanupajit.blogapplication.viewmodel.component.NavItem;
 import jbc.oct21.jindanupajit.blogapplication.viewmodel.component.Navbar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
-import javax.validation.Valid;
 import java.sql.Timestamp;
-import java.util.Collections;
 import java.util.Optional;
 
 @Controller
@@ -47,21 +43,41 @@ public class BlogEntryController {
         NavbarViewModel navbarViewModel = new NavbarViewModel(NavbarViewModel.navbarDefault());
         navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(NavbarViewModel.navItem("Category", categoryRepository));
         navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(NavbarViewModel.navItem("Article", (BlogEntry) null));
+        navbarViewModel.getViewModel().getNavs().getNavItemCollection().get(0).setActive(true);
         model.addAttribute("NavbarViewModel", navbarViewModel);
 
         model.addAttribute("BlogEntryListViewModel",
-                new ViewModel<Iterable<BlogEntry>>("fragment/blogentry :: list", blogEntryRepository.findAll()));
+                new ViewModel<Iterable<BlogEntry>>("fragment/blogentry :: list", blogEntryRepository.findAllByOrderByTimestampDesc()));
 
         return "blog_view";
     }
 
-    @GetMapping(value = {"/blog/view/{id}"})
-    public String pageBlogView(Model model, @PathVariable String id) {
-        Optional<BlogEntry> blog = blogEntryRepository.findById(Long.parseLong(id));
+
+
+    @GetMapping(value = {"/blog/view/{idString}"})
+    public String pageBlogView(Model model, @PathVariable String idString) {
+        long id;
+        try {
+            id = Long.parseLong(idString);
+        } catch (NumberFormatException e) {
+            id = 0;
+        }
+        Optional<BlogEntry> blog = blogEntryRepository.findById(id);
+
+        NavItem articleNavItem = NavbarViewModel.navItem("Article", blog.orElse(new BlogEntry()));
+        articleNavItem.setActive(true);
+
+        NavItem categoryNavItem = NavbarViewModel.navItem("Category", categoryRepository);
+        for (Category category : categoryRepository.findAll())
+            if (category.getId() == blog.orElse(new BlogEntry()).getCategory().getId()) {
+                categoryNavItem.setLabel(category.getName());
+                categoryNavItem.setActive(true);
+                break;
+            }
 
         NavbarViewModel navbarViewModel = new NavbarViewModel(NavbarViewModel.navbarDefault());
-        navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(NavbarViewModel.navItem("Category", categoryRepository));
-        navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(NavbarViewModel.navItem("Article", blog.orElse(new BlogEntry())));
+        navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(categoryNavItem);
+        navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(articleNavItem);
         model.addAttribute("NavbarViewModel", navbarViewModel);
 
         model.addAttribute("BlogEntryViewModel",
@@ -69,6 +85,35 @@ public class BlogEntryController {
 
 
         return "blog_view_id";
+    }
+
+    @GetMapping(value = {"/category/view/{idString}"})
+    public String pageCategoryView(Model model, @PathVariable String idString) {
+        long id;
+        try {
+            id = Long.parseLong(idString);
+        } catch (NumberFormatException e) {
+            id = 0;
+        }
+
+        NavItem categoryNavItem = NavbarViewModel.navItem("Category", categoryRepository);
+        for (Category category : categoryRepository.findAll()) {
+            if (category.getId() == id)
+                categoryNavItem.setLabel(category.getName());
+        }
+        categoryNavItem.setActive(true);
+        NavbarViewModel navbarViewModel = new NavbarViewModel(NavbarViewModel.navbarDefault());
+        navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(categoryNavItem);
+        navbarViewModel.getViewModel().getNavs().getNavItemCollection().add(NavbarViewModel.navItem("Article",
+                (BlogEntry) null));
+        model.addAttribute("NavbarViewModel", navbarViewModel);
+
+        model.addAttribute("BlogEntryListViewModel",
+                new ViewModel<Iterable<BlogEntry>>("fragment/blogentry :: list",
+                        blogEntryRepository.findAllByCategoryIdOrderByTimestampDesc(id)));
+
+
+        return "blog_view";
     }
 
     @GetMapping(value = {"/blog/edit/{idString}"})

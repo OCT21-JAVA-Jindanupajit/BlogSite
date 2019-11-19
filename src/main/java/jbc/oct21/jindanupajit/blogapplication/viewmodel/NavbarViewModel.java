@@ -32,7 +32,6 @@ public class NavbarViewModel extends  ViewModel<Navbar> {
         navItem = new NavItem();
         navItem.setLabel("Home");
         navItem.getLinkCollection().get(0).setUrl("/blog/view");
-        navItem.setActive(true);
         navbar.getNavs().getNavItemCollection().add(navItem);
 
         navItem = new NavItem();
@@ -47,7 +46,7 @@ public class NavbarViewModel extends  ViewModel<Navbar> {
         navItem.setLabel(label);
         ArrayList<Link> linkCollection = new ArrayList<>();
         for (Category category : categoryRepository.findAll()) {
-            linkCollection.add(new Link(category.getName(),"/category/view"+category.getId()));
+            linkCollection.add(new Link(category.getName(),"/category/view/"+category.getId()));
         }
         navItem.setLinkCollection(linkCollection);
         return navItem;
