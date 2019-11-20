@@ -3,15 +3,14 @@ package jbc.oct21.jindanupajit.blogapplication.controller;
 import jbc.oct21.jindanupajit.blogapplication.model.User;
 import jbc.oct21.jindanupajit.blogapplication.repository.CategoryRepository;
 import jbc.oct21.jindanupajit.blogapplication.repository.UserRepository;
-import jbc.oct21.jindanupajit.blogapplication.service.NavbarViewModel;
 import jbc.oct21.jindanupajit.blogapplication.service.UserDetailsServiceImpl;
+import jbc.oct21.jindanupajit.blogapplication.viewmodel.NavbarViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import sun.plugin.util.UserProfile;
 
 @Controller
 public class ProfileController {

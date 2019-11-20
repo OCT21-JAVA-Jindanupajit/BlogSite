@@ -1,6 +1,9 @@
 package jbc.oct21.jindanupajit.blogapplication.model;
 
-import org.pegdown.PegDownProcessor;
+import com.vladsch.flexmark.util.ast.Node;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.data.MutableDataSet;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -102,8 +105,12 @@ public class BlogEntry {
     }
 
     public String getHtmlContent() {
-        PegDownProcessor pegDownProcessor = new PegDownProcessor();
-        return pegDownProcessor.markdownToHtml(content);
+        MutableDataSet options = new MutableDataSet();
+        Parser parser = Parser.builder(options).build();
+        HtmlRenderer renderer = HtmlRenderer.builder(options).build();
+        Node document = parser.parse(content);
+        String html = renderer.render(document);
+        return html;
     }
 
     public String getTextContent() {

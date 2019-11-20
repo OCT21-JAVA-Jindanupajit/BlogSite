@@ -6,9 +6,9 @@ import jbc.oct21.jindanupajit.blogapplication.model.User;
 import jbc.oct21.jindanupajit.blogapplication.repository.BlogEntryRepository;
 import jbc.oct21.jindanupajit.blogapplication.repository.CategoryRepository;
 import jbc.oct21.jindanupajit.blogapplication.repository.UserRepository;
-import jbc.oct21.jindanupajit.blogapplication.service.NavbarViewModel;
 import jbc.oct21.jindanupajit.blogapplication.service.UserDetailsServiceImpl;
-import jbc.oct21.jindanupajit.blogapplication.service.ViewModel;
+import jbc.oct21.jindanupajit.blogapplication.viewmodel.ViewModel;
+import jbc.oct21.jindanupajit.blogapplication.viewmodel.NavbarViewModel;
 import jbc.oct21.jindanupajit.blogapplication.viewmodel.component.NavItem;
 import jbc.oct21.jindanupajit.blogapplication.viewmodel.component.Navbar;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,6 +157,7 @@ public class BlogEntryController {
 
 
         NavbarViewModel navbarViewModel = new NavbarViewModel(new Navbar());
+        navbarViewModel.getViewModel().getBrand().setLabel("Edit");
         model.addAttribute("NavbarViewModel", navbarViewModel);
 
         model.addAttribute("BlogEntryViewModel",

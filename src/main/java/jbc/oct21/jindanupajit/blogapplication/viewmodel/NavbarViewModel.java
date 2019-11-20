@@ -1,4 +1,4 @@
-package jbc.oct21.jindanupajit.blogapplication.service;
+package jbc.oct21.jindanupajit.blogapplication.viewmodel;
 
 import jbc.oct21.jindanupajit.blogapplication.model.BlogEntry;
 import jbc.oct21.jindanupajit.blogapplication.model.Category;
