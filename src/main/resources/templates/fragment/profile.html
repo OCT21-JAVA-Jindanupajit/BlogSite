@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!--  Bootstrap 4.3.1  -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+<body>
+<div th:fragment="page" th:with="user = ${UserViewModel.viewModel}">
+    <div class="container" >
+        <div class="row">
+            <div class="col mx-auto" style="max-width: 30rem;">
+                <div class="card w-lg-80 p-3 my-5" th:object="${user}">
+                    <div>
+                        <img th:if="*{photo}" class="card-img-top img-thumbnail" th:src="*{photo.url}" />
+                        <img th:unless="*{photo}" class="card-img-top img-thumbnail" th:src="@{/images/profile-picture.jpg}" />
+                        <small><a th:href="*{photo.url}" th:if="*{photo}" th:text="*{photo.url}"></a><p th:unless="*{photo}">No profile picture</p></small>
+                    </div>
+                    <div class=""card-body>
+                        <p class="card-title display-4 text-center" th:text="*{name}">Name</p>
+                        <p class="font-family-Raleway display-5"
+                           style="font-size: 1.2rem; line-height: 1.4rem;min-height:14rem;"
+                           th:text="*{biography}">Biography sfadfsad fsfsadfsdf sdfs fsdfsdf asdf sfadfsad
+                            fsfsadfsdf sdfs fsdfsdf asdfsfadfsad sfadfsad fsfsadfsdf sdfs fsdfsdf asdf
+                            fsfsadfsdf sdfs fsdfsdf asdf</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div th:fragment="edit" th:with="user = ${UserViewModel.viewModel}">
+    <form th:action="@{/profile/edit/process}" th:object="${newUser}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}">
+        <div class="container pb-4" >
+            <div class="row">
+                <div class="col mx-auto" style="max-width: 30rem;">
+                    <div class="card w-lg-80 p-3 mt-5 mb-1">
+                        <div>
+                            <div>
+                                <img th:if="*{photo}" class="card-img-top img-thumbnail" th:src="*{photo.url}" />
+                                <img th:unless="*{photo}" class="card-img-top img-thumbnail" th:src="@{/images/profile-picture.jpg}" />
+                                <small><a th:href="*{photo.url}" th:if="*{photo}" th:text="*{photo.url}"></a><p th:unless="*{photo}">No profile picture</p></small>
+                            </div>
+                            <p> <div class="form-group">
+                            <label for="exampleFormControlFile">Update Profile Image</label>
+                            <input type="file" class="w-100 form-control-file" name="imageFile"
+                                   accept="image/*" id="exampleFormControlFile">
+                        </div></p>
+                        </div>
+                        <div class=""card-body>
+                            <input class="card-title display-4 text-center w-100 formcontrol" th:field="*{name}" placeholder="Name"/>
+                            <textarea class="font-family-Raleway display-5 w-100 formcontrol"
+                                      style="font-size: 1.2rem; line-height: 1.4rem;min-height:14rem;"
+                                      th:field="*{biography}" placeholder="Biography"></textarea>
+
+                        </div>
+                    </div>
+                    <div class="float-right">
+                        <a th:href="@{/profile/view/{id}(id=*{id})}" class="btn btn-outline-danger">Discard</a>
+                        <button type="submit" class="btn btn-success">Save Profile</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!--  Bootstrap 4.3.1  -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

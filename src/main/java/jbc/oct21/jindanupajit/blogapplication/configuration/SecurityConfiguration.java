@@ -2,8 +2,10 @@ package jbc.oct21.jindanupajit.blogapplication.configuration;
 
 import jbc.oct21.jindanupajit.blogapplication.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,6 +18,12 @@ public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+
+    @Value("${spring.h2.console.enabled}")
+    private boolean h2ConsoleEnabled;
+
+    @Value("${spring.h2.console.path}")
+    private String h2ConsolePath;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -38,18 +46,20 @@ public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
                     .antMatchers("/",
                             "/login",
                             "/logout",
-                            "/h2-console/**",
                             "/css/**",
                             "/images/**",
                             "/blogEntry/view",
                             "/blogEntry/view/**",
                             "/category/**",
                             "/profile/view/**",
-                                    "/search/**")
+                            "/search/**")
                         .permitAll();
 
-        http.csrf().disable();
-        http.headers().frameOptions().disable();
+        if (h2ConsoleEnabled) {
+            http.authorizeRequests().antMatchers(h2ConsolePath + "/**").permitAll();
+            http.csrf().disable();
+            http.headers().frameOptions().disable();
+        }
 //        http    .authorizeRequests()
 //                    .antMatchers("/blogEntry/edit/**","/blogEntry/edit/process","/blogEntry/delete/**")
 //                    .access("hasAnyRole('AUTHENTICATED_USER', 'ROLE_ADMIN')");

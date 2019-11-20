@@ -22,7 +22,12 @@ public class User implements UserDetails {
     @Lob
     private String biography;
 
-    private String photo;
+    @OneToOne (
+        cascade = CascadeType.PERSIST,
+        orphanRemoval = false,
+        fetch = FetchType.EAGER
+    )
+    private CloudinaryImage photo;
 
     @OneToMany(
             cascade = CascadeType.ALL,
@@ -34,7 +39,7 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String name, String biography, String photo, List<SocialMedia> socialMedia) {
+    public User(String name, String biography, CloudinaryImage photo, List<SocialMedia> socialMedia) {
         this.name = name;
         this.biography = biography;
         this.photo = photo;
@@ -65,11 +70,11 @@ public class User implements UserDetails {
         this.biography = biography;
     }
 
-    public String getPhoto() {
+    public CloudinaryImage getPhoto() {
         return photo;
     }
 
-    public void setPhoto(String photo) {
+    public void setPhoto(CloudinaryImage photo) {
         this.photo = photo;
     }
 

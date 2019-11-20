@@ -9,17 +9,13 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/general.css}">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
+
 </head>
 <body>
 <div th:insert="__${NavbarViewModel.view}__"  th:object="${NavbarViewModel}">
     <!-- fragment/navbar :: navbar -->
 </div>
-<div th:object="${user}">
-<p th:text="*{id}"></p>
-<p th:text="*{name}"></p>
-<p th:text="*{biography}"></p>
-<p th:text="*{photo}"></p>
-</div>
+<div th:insert="__${UserViewModel.view}__" th:object="${UserViewModel}"></div>
 <!--  Bootstrap 4.3.1  -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

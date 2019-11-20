@@ -14,10 +14,7 @@ import jbc.oct21.jindanupajit.blogapplication.viewmodel.component.Navbar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.Optional;
@@ -173,7 +170,7 @@ public class BlogEntryController {
     }
 
     @PostMapping(value = {"/blogEntry/edit/process"})
-    public String pageBlogEdit(BlogEntry blogEntry) {
+    public String pageBlogEdit(@ModelAttribute BlogEntry blogEntry) {
 
         blogEntry.setTimestamp(new Timestamp(System.currentTimeMillis()));
         User user = userRepository.findByName(UserDetailsServiceImpl.getAuthentication().getName());

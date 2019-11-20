@@ -52,7 +52,8 @@ public class NavbarViewModel extends  ViewModel<Navbar> {
 
         Collections.addAll(navItem.getLinkCollection(),
                 new Link("-","-"),
-                new Link("My Profile","/profile/view/"+user.getId())
+                new Link("View My Profile","/profile/view/"+user.getId()),
+                new Link("Edit My Profile","/profile/edit/"+user.getId())
         );
 
         return navItem;
